@@ -1,0 +1,169 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+int selectionsort(int *ar,int n)
+{
+   int cnt=0,min,temp;
+   for(int i=0; i<n-1; i++)
+   {
+      min = i;
+      for(int j=i+1 ; j<n; j++)
+      {
+         cnt++;
+         if( ar[j]<ar[min] )
+         {
+             temp = ar[j];
+             ar[j] = ar[min];
+             ar[min] = temp;
+         }
+      }
+   }
+   
+   return cnt;
+}
+
+int main()
+{
+   FILE *fp = fopen("general_ss.txt","a");
+   int *ar;
+
+   for(int n=10; n<=200; n+=10)
+   {
+      ar = (int *)malloc(sizeof(int)*n);
+
+      //General case
+      for(int i=0; i<n; i++)
+         ar[i] = n-i;
+
+      fprintf(fp,"%d %d\n",n,selectionsort(ar,n));
+      free(ar);
+   }
+   fclose(fp);
+   system("gnuplot>load comman_ss.txt");
+   return 0;
+}
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+int bubble_sort(int * ar,int n)
+{
+    int cnt=0,temp,i,j;
+    for(i=0; i <n-1 ; i++)
+    {
+        for(j=0 ; j<n-i-1; j++)
+        {
+          cnt++;
+          if( ar[j+1] < ar[j] )
+          {
+            temp = ar[j];
+            ar[j]= ar[j+1];
+            ar[j+1] = temp;
+          }
+        }
+    }
+    return cnt;
+}
+
+void main()
+{
+    int * ar,i;
+    FILE *fp1, *fp2;
+
+    fp1 = fopen("general_bbs.txt","a");
+    srand(time(NULL));
+
+    for(int n=10; n<=200 ; n+=10)
+    {
+        ar = (int *)malloc(n*sizeof(int));
+        for(i=0 ; i<n ; i++)
+          ar[i] = rand()%n;
+        fprintf(fp1,"%d\n",bubble_sort(ar,n));
+        free(ar);
+    }  
+
+    fclose(fp1);
+    system("gnuplot>load command_bbs.txt");
+}
+
+set title 'BUBBLE SORT'
+set xrange[0:200]
+set yrange[0:20000]
+set xlabel 'Input size(n);
+set ylabel 'Operation time(t)'
+set style data linespoints
+plot 'best_bb.txt' title 'Best case','worst_bb.txt' title 'Worst case'
+pause -1 'press any key to continue'
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+int Insertion_sort(int * arr,int n)
+{
+   int j,i,temp,count=0;
+   for( i=1; i<n ; i++)
+   {
+     temp = arr[i];
+     j = i-1;
+     while( j>=0 ) 
+       {
+        count++;
+        if( arr[j]<=temp )
+           break;
+        arr[j+1] = arr[j--];
+       }
+     arr[j+1] = temp;
+   }
+   return count;
+}
+
+void main()
+{
+   FILE *fp1,*fp2,*fp3;
+   int *arr,i;
+   srand(time(NULL));
+
+   fp1 = fopen("best_Isort.txt","w");
+   fp2 = fopen("worst_Isort.txt","w");
+   fp3 = fopen("general_Isort.txt","w");
+
+   for(int n=10 ; n<=200 ; n+=10)
+   {
+      arr = (int *)malloc(sizeof(int)*n);
+
+      //Best Case : Ascending order
+      for( i=0 ; i<n ; i++)
+          arr[i] = i+1;
+      fprintf(fp1,"%d %d\n",n,Insertion_sort(arr,n));
+
+      //Worst Case : Descending Order
+      for( i=0 ; i<n ; i++)
+         arr[i] = n-i;
+      fprintf(fp2,"%d %d\n",n,Insertion_sort(arr,n));
+
+      //General Case :
+      for( i=0 ; i<n ; i++)
+          arr[i] = rand()%n;
+      fprintf(fp3,"%d %d\n",n,Insertion_sort(arr,n));
+
+      free(arr);
+   }
+   fclose(fp1);
+   fclose(fp2);
+   fclose(fp3);
+   system("gnuplot>>load command_Isort.txt");
+}
+
+set title 'Insertion Sort'
+set xrange[0:200]
+set yrange[0:20000]
+set xlabel 'Input Size (n)'
+set ylabel 'Operation Count (count)'
+set style data linespoints
+plot 'best_Isort.txt' title 'BEST CASE ANALYSIS','worst_Isort.txt' title 'WORST CASE ANALYSIS','general_Isort.txt' title 'GENERAL CASE ANALYSIS'
+pause -1 'Press any key to continue'
+
